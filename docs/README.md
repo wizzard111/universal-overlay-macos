@@ -1,90 +1,88 @@
-# Universal Overlay для macOS
+# Universal Overlay for macOS
 
-Лёгкий оверлей поверх игр (в том числе полноэкранных): FPS, время кадра с
-графиком, 1% / 0.1% low, графики любых датчиков, гибкая настройка внешнего
-вида и размера, автообновление с GitHub. Apple Silicon и Intel, macOS 13+.
+A lightweight overlay on top of games (full-screen ones included): FPS, frame
+time with a graph, 1% / 0.1% lows, graphs of any sensor, flexible styling and
+size, and automatic updates from GitHub. Apple Silicon and Intel, macOS 13+.
 
-**[Скачать последнюю версию](https://github.com/wizzard111/universal-overlay-macos/releases/latest)** —
-`universal-overlay-macos.dmg` — откройте и запустите Install.
+**[Download the latest version](https://github.com/wizzard111/universal-overlay-macos/releases/latest)** —
+`universal-overlay-macos.dmg`: open it and run Install.
 
-Версии для других систем: [Windows](https://github.com/wizzard111/universal-overlay-windows) · [Linux](https://github.com/wizzard111/universal-overlay-linux).
+Other systems: [Windows](https://github.com/wizzard111/universal-overlay-windows) · [Linux](https://github.com/wizzard111/universal-overlay-linux).
 
-Лицензия — [MIT](../LICENSE). Что нового — [CHANGELOG](CHANGELOG.md).
+License: [MIT](../LICENSE). What's new: [CHANGELOG](CHANGELOG.md). Built together with Claude.
 
-Интерфейс программы — на английском.
+## Install, update, uninstall
 
-## Установка, обновление, удаление
+Only three files are at the top; everything else is in folders:
 
-Наверху лежат только три файла, остальное — в папках:
-
-| Файл | Что делает |
+| File | What it does |
 |---|---|
-| `install.command` | Устанавливает. Окно Терминала — журнал установки. С диска DMG рядом открывается окно, где приложение перетаскивается в «Applications» (или Enter — скопирует сам). В клоне репозитория сначала собирает программу (нужны [Rust](https://rustup.rs) и Xcode Command Line Tools) |
-| `update.command` | В клоне с git — забирает изменения, пересобирает и обновляет. Иначе скачивает последний релиз с GitHub, проверяет SHA-256 и заменяет приложение. Настройки остаются |
-| `uninstall.command` | Удаляет приложение, автозапуск и разрешение «Запись экрана»; про настройки спросит |
+| `install.command` | Installs. The Terminal window is the setup log. From the DMG a window opens where you drag the app onto "Applications" (or press Enter and it is copied for you). In a clone of the repository it builds the program first (needs [Rust](https://rustup.rs) and the Xcode Command Line Tools) |
+| `update.command` | In a git clone: pulls the changes, rebuilds and updates. Otherwise downloads the latest GitHub release, verifies its SHA-256 and replaces the app. Your settings are kept |
+| `uninstall.command` | Removes the app, autostart and the Screen Recording permission; asks about your settings |
 
-На диске DMG они называются Install и Uninstall. Пароль администратора
-спрашивается, только если в /Applications нельзя писать без него. Для FPS
-macOS попросит разрешение «Запись экрана». Обновить можно и из настроек: General → Updates.
+On the DMG they are called Install and Uninstall. The administrator password is
+asked only when /Applications is not writable without it. For FPS macOS asks for
+the Screen Recording permission. You can also update from the app: General →
+Updates.
 
-> Без сертификата Apple Developer ID Gatekeeper один раз остановит первый
-> запуск: «Системные настройки → Конфиденциальность и безопасность → Всё равно
-> открыть». Обновления через встроенный апдейтер этого вопроса не вызывают.
+> Without an Apple Developer ID certificate Gatekeeper stops the first launch
+> once: System Settings → Privacy & Security → Open Anyway. Updates through the
+> built-in updater do not trigger it again.
 
-## Откуда FPS
+## Where FPS comes from
 
-macOS не даёт узнать, когда чужое приложение выводит кадр, но WindowServer
-знает, когда меняется содержимое окна. Оверлей захватывает окно активного
-приложения через ScreenCaptureKit в размере 16×16 пикселей: уменьшает GPU, а
-пиксели не читаются. Считаются кадры со статусом `Complete`; неизменившиеся
-кадры приходят как `Idle`. Нагрузка на CPU — доли процента, FPS ограничен
-частотой дисплея. Если окно игры появилось позже или пересоздалось (смена
-разрешения, полноэкранный режим), захват перезапускается сам. Внедрения в
-игру нет.
+macOS does not tell other apps when an app presents a frame, but the window
+server knows when a window's content changes. The overlay captures the active
+app's window through ScreenCaptureKit at 16×16 pixels (the GPU scales it down;
+the pixels are never read) and counts frames with the `Complete` status;
+unchanged frames arrive as `Idle`. CPU cost is a fraction of a percent; FPS is
+capped by the display refresh rate. If the game window appears later or is
+recreated (resolution or full-screen switch), capture restarts by itself.
+Nothing is injected into the game.
 
-## Возможности
+## Features
 
-* **Время кадра и FPS**, график с подсветкой «плохих» кадров, 1% / 0.1% low.
-* **Графики любых датчиков** — сколько угодно, у каждого свои цвет, высота,
-  окно истории и шкала.
-* **Датчики:** загрузка CPU и GPU, занятая память GPU, RAM.
-* **Внешний вид:** раскладка, шрифт, размеры, цвета, фон, скругление,
-  **размер оверлея** (25–400%), **прозрачность**, угол экрана и монитор.
-* **Настройки** — тёмная или светлая тема (или как в системе), 8 акцентных
-  цветов, анимации, изменения применяются к оверлею сразу.
+* **Frame time and FPS**, a graph that highlights bad frames, 1% / 0.1% lows.
+* **Graphs of any sensor** — as many as you like, each with its own color,
+  height, history window and scale.
+* **Sensors:** CPU and GPU load, GPU memory in use, RAM.
+* **Styling:** layout, font, sizes, colors, background, corner radius,
+  **overlay size** (25–400%), **opacity**, screen corner and monitor.
+* **Settings app** — dark, light or system theme, 8 accent colors,
+  animations; changes apply to the overlay instantly.
 
-Значок в строке меню, горячая клавиша по умолчанию — **Ctrl+Option+O**
-(Ctrl+Alt+O). Повторное открытие приложения из Finder или Launchpad
-открывает настройки.
+The icon lives in the menu bar; the default hotkey is **Ctrl+Option+O**.
+Opening the app again from Finder or Launchpad shows the settings.
 
-## Нагрузка
+## Resource use
 
-Скрытый оверлей спит без таймеров и не захватывает окно. Окно оверлея
-двигается только при изменении положения, графики датчиков перерисовываются
-раз в тик, рендер программный.
+The hidden overlay sleeps with no timers and captures nothing. The overlay
+window moves only when its position changes, sensor graphs are redrawn once per
+tick, rendering is software-only.
 
-## Сборка
-
-```
-./install.command                 собрать и установить
-sh source/build/build.sh          только собрать релиз → source/target/dist (.tar.gz и .dmg)
-```
-
-С постоянным сертификатом (секрет `MACOS_SIGN_IDENTITY`, хоть самоподписанным)
-macOS помнит разрешение «Запись экрана» между обновлениями. С Developer ID и
-секретами `APPLE_*` сборка ещё и нотаризуется. Пуш тега `v*` запускает
-`.github/workflows/release.yml`.
-
-## Структура
+## Building
 
 ```
-install.command  update.command  uninstall.command   установка, обновление, удаление
-docs/                                                документация
+./install.command                 build and install
+sh source/build/build.sh          build a release only → source/target/dist (.tar.gz and .dmg)
+```
+
+With a stable certificate (the `MACOS_SIGN_IDENTITY` secret, even a
+self-signed one) macOS remembers the Screen Recording permission across
+updates. With a Developer ID and the `APPLE_*` secrets the build is also
+notarized. Pushing a `v*` tag runs `.github/workflows/release.yml`.
+
+## Layout
+
+```
+install.command  update.command  uninstall.command   install, update, uninstall
+docs/                                                documentation
 source/
-  crates/common     конфиг, горячие клавиши, шрифты, IPC
-  crates/overlay    оверлей: ядро, рендер, кадры (ScreenCaptureKit), датчики, строка меню
-  crates/settings   приложение настроек
-  crates/updater    апдейтер (curl и tar из системы, проверка SHA-256)
+  crates/common     config, hotkeys, fonts, IPC
+  crates/overlay    overlay: core, renderer, frames (ScreenCaptureKit), sensors, menu bar
+  crates/settings   settings app
+  crates/updater    updater (the system's curl and tar, SHA-256 check)
   resources/        Info.plist
-  build/            сборка релиза (.app, .tar.gz, .dmg)
+  build/            release build (.app, .tar.gz, .dmg)
 ```
