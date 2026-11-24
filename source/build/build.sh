@@ -1,20 +1,20 @@
 #!/bin/sh
-# Universal Overlay — сборка релиза для macOS (Apple Silicon + Intel).
+# Universal Overlay — release build for macOS (Apple Silicon + Intel).
 #
-# Результат (всё внутри source/target, корень репозитория не трогается):
+# Output (everything inside source/target, the repository root is untouched):
 #   target/package/universal-overlay-macos-universal/
-#       install.command  update.command  uninstall.command   <- наверху только они
+#       install.command  update.command  uninstall.command   <- the only files at the top
 #       app/Universal Overlay.app
-#   target/dist/universal-overlay-macos-universal.tar.gz   (его скачивает апдейтер)
-#   target/dist/universal-overlay-macos.dmg                (для людей: окно «перетащите
-#                                                           в Applications» + журнал установки)
+#   target/dist/universal-overlay-macos-universal.tar.gz   (what the updater downloads)
+#   target/dist/universal-overlay-macos.dmg                (for people: a "drag to
+#                                                           Applications" window + setup log)
 #   target/dist/SHA256SUMS-macos.txt
 #
-#   --print-package   последней строкой вывести путь к папке пакета
-# Переменные:
-#   UO_GITHUB_REPO=owner/name   откуда апдейтер берёт релизы
-#   MACOS_SIGN_IDENTITY         сертификат для codesign (иначе ad-hoc подпись)
-#   APPLE_ID, APPLE_TEAM_ID, APPLE_APP_PASSWORD   нотаризация (нужен Developer ID)
+#   --print-package   print the package folder as the last line
+# Environment:
+#   UO_GITHUB_REPO=owner/name   where the updater looks for releases
+#   MACOS_SIGN_IDENTITY         certificate for codesign (otherwise ad-hoc signing)
+#   APPLE_ID, APPLE_TEAM_ID, APPLE_APP_PASSWORD   notarization (needs a Developer ID)
 set -eu
 
 SOURCE=$(cd "$(dirname "$0")/.." && pwd)
@@ -27,7 +27,7 @@ APP="$PKG/app/Universal Overlay.app"
 DIST=$SOURCE/target/dist
 BINS="universal-overlay universal-overlay-settings universal-overlay-updater uo-probe"
 echo "== Universal Overlay $VERSION (macOS)" >&2
-[ -n "${UO_GITHUB_REPO:-}" ] || echo "   UO_GITHUB_REPO не задан: апдейтер использует wizzard111/universal-overlay-macos" >&2
+[ -n "${UO_GITHUB_REPO:-}" ] || echo "   UO_GITHUB_REPO not set: the updater uses wizzard111/universal-overlay-macos" >&2
 
 for t in aarch64-apple-darwin x86_64-apple-darwin; do
     rustup target add "$t" >/dev/null 2>&1 || true
@@ -46,7 +46,7 @@ printf '%s\n' "$VERSION" > "$APP/Contents/Resources/VERSION"
 cp "$REPO/update.command" "$REPO/uninstall.command" "$REPO/docs/README.md" "$APP/Contents/Resources/"
 chmod 755 "$APP/Contents/Resources/"*.command
 
-# Иконка: рисует сам оверлей (сжатые PNG), iconutil собирает .icns.
+# Icon: drawn by the overlay itself (compressed PNG), iconutil builds the .icns.
 ICONSET=$(mktemp -d)/icon.iconset
 mkdir -p "$ICONSET"
 for s in 16 32 128 256 512; do
@@ -55,8 +55,8 @@ for s in 16 32 128 256 512; do
 done
 iconutil -c icns "$ICONSET" -o "$APP/Contents/Resources/icon.icns"
 
-# Подпись. С постоянным сертификатом macOS помнит разрешение «Запись экрана»
-# между обновлениями; при ad-hoc подписи его придётся выдавать заново.
+# Signing. With a stable certificate macOS remembers the Screen Recording
+# permission across updates; with ad-hoc signing it has to be granted again.
 IDENT=${MACOS_SIGN_IDENTITY:--}
 if [ "$IDENT" = "-" ]; then SIGN_OPTS=""; else SIGN_OPTS="--options runtime --timestamp"; fi
 for b in universal-overlay-settings universal-overlay-updater uo-probe; do
@@ -78,25 +78,25 @@ ZIP=$(mktemp -d)/app.zip
 ditto -c -k --keepParent "$APP" "$ZIP"
 if notarize "$ZIP"; then xcrun stapler staple "$APP" >&2; fi
 
-# Архив для апдейтера.
+# Archive for the updater.
 cp "$REPO/install.command" "$REPO/update.command" "$REPO/uninstall.command" "$PKG/"
 chmod 755 "$PKG"/*.command
 tar -C "$SOURCE/target/package" -czf "$DIST/$NAME.tar.gz" "$NAME"
 
-# DMG: приложение со стрелкой на «Applications», рядом установка и удаление.
+# DMG: the app with an arrow to "Applications", plus install and uninstall.
 DMG="$DIST/universal-overlay-macos.dmg"
 rm -f "$DMG"
 STAGE="$(mktemp -d)/Universal Overlay"
 mkdir -p "$STAGE"
 ditto "$APP" "$STAGE/Universal Overlay.app"
-cp "$REPO/install.command" "$STAGE/Установить.command"
-cp "$REPO/uninstall.command" "$STAGE/Удалить.command"
+cp "$REPO/install.command" "$STAGE/Install.command"
+cp "$REPO/uninstall.command" "$STAGE/Uninstall.command"
 chmod 755 "$STAGE"/*.command
 if command -v create-dmg >/dev/null 2>&1; then
     create-dmg --volname "Universal Overlay" --window-pos 200 120 --window-size 660 420 --icon-size 96 \
         --icon "Universal Overlay.app" 170 170 --app-drop-link 490 170 \
-        --icon "Установить.command" 170 320 --icon "Удалить.command" 490 320 \
-        --hide-extension "Установить.command" --hide-extension "Удалить.command" \
+        --icon "Install.command" 170 320 --icon "Uninstall.command" 490 320 \
+        --hide-extension "Install.command" --hide-extension "Uninstall.command" \
         --no-internet-enable "$DMG" "$STAGE" >&2 || true
 fi
 if [ ! -f "$DMG" ]; then
@@ -108,5 +108,5 @@ if [ "$IDENT" != "-" ]; then
     if notarize "$DMG"; then xcrun stapler staple "$DMG" >&2; fi
 fi
 (cd "$DIST" && shasum -a 256 "$NAME.tar.gz" "$(basename "$DMG")" > SHA256SUMS-macos.txt)
-echo "== Готово: $DIST" >&2
+echo "== Done: $DIST" >&2
 if [ "${1:-}" = --print-package ]; then echo "$PKG"; fi

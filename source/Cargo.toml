@@ -3,12 +3,12 @@ resolver = "2"
 members = ["crates/common", "crates/overlay", "crates/settings", "crates/updater"]
 
 [workspace.package]
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/wizzard111/universal-overlay-macos"
 homepage = "https://github.com/wizzard111/universal-overlay-macos"
-description = "Лёгкий оверлей FPS, времени кадра и датчиков для macOS"
+description = "Lightweight FPS, frame-time and sensor overlay for macOS"
 
 [profile.release]
 opt-level = 3

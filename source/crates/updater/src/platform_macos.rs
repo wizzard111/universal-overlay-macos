@@ -40,7 +40,7 @@ pub fn run_installer(pkg: &Path, install: &Path) -> Result<(), String> {
     if st.success() {
         Ok(())
     } else {
-        Err(format!("установщик завершился с кодом {st}"))
+        Err(format!("the installer exited with code {st}"))
     }
 }
 

@@ -551,14 +551,14 @@ pub fn run() {
     let menu = NSMenu::new(mtm);
     menu.addItem(&menu_item(
         mtm,
-        "Показать / скрыть оверлей",
+        "Show / hide overlay",
         sel!(toggle:),
         &target,
     ));
-    menu.addItem(&menu_item(mtm, "Настройки…", sel!(settings:), &target));
-    menu.addItem(&menu_item(mtm, "Перечитать конфиг", sel!(reload:), &target));
+    menu.addItem(&menu_item(mtm, "Settings…", sel!(settings:), &target));
+    menu.addItem(&menu_item(mtm, "Reload config", sel!(reload:), &target));
     menu.addItem(&NSMenuItem::separatorItem(mtm));
-    menu.addItem(&menu_item(mtm, "Выход", sel!(quit:), &target));
+    menu.addItem(&menu_item(mtm, "Exit", sel!(quit:), &target));
     status.setMenu(Some(&menu));
 
     unsafe {

@@ -279,19 +279,17 @@ impl Core {
 
     fn note(&self) -> Option<&'static str> {
         if self.cfg_error.is_some() {
-            return Some("Ошибка в config.toml — используются настройки по умолчанию");
+            return Some("Error in config.toml — using default settings");
         }
         if !uses_frames(&self.cfg) {
             return None;
         }
         match self.frame_status {
-            Status::AccessDenied => Some("FPS: нужны права администратора (меню в трее)"),
-            Status::NoLayer => Some("FPS: установите Vulkan-слой (меню в трее)"),
-            Status::Unsupported => Some("FPS на этой ОС недоступен"),
-            Status::NoPermission => {
-                Some("FPS: разрешите «Запись экрана» (Настройки → Конфиденциальность)")
-            }
-            Status::Error(_) => Some("FPS: не удалось запустить сбор кадров"),
+            Status::AccessDenied => Some("FPS: administrator rights required (tray menu)"),
+            Status::NoLayer => Some("FPS: install the Vulkan layer (tray menu)"),
+            Status::Unsupported => Some("FPS is not available on this OS"),
+            Status::NoPermission => Some("FPS: allow Screen Recording (System Settings → Privacy)"),
+            Status::Error(_) => Some("FPS: could not start frame capture"),
             _ => None,
         }
     }

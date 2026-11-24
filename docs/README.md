@@ -5,11 +5,13 @@
 вида и размера, автообновление с GitHub. Apple Silicon и Intel, macOS 13+.
 
 **[Скачать последнюю версию](https://github.com/wizzard111/universal-overlay-macos/releases/latest)** —
-`universal-overlay-macos.dmg` — откройте и запустите «Установить».
+`universal-overlay-macos.dmg` — откройте и запустите Install.
 
 Версии для других систем: [Windows](https://github.com/wizzard111/universal-overlay-windows) · [Linux](https://github.com/wizzard111/universal-overlay-linux).
 
 Лицензия — [MIT](../LICENSE). Что нового — [CHANGELOG](CHANGELOG.md).
+
+Интерфейс программы — на английском.
 
 ## Установка, обновление, удаление
 
@@ -21,9 +23,9 @@
 | `update.command` | В клоне с git — забирает изменения, пересобирает и обновляет. Иначе скачивает последний релиз с GitHub, проверяет SHA-256 и заменяет приложение. Настройки остаются |
 | `uninstall.command` | Удаляет приложение, автозапуск и разрешение «Запись экрана»; про настройки спросит |
 
-На диске DMG они называются «Установить» и «Удалить». Пароль администратора
+На диске DMG они называются Install и Uninstall. Пароль администратора
 спрашивается, только если в /Applications нельзя писать без него. Для FPS
-macOS попросит разрешение «Запись экрана». Обновить можно и из настроек.
+macOS попросит разрешение «Запись экрана». Обновить можно и из настроек: General → Updates.
 
 > Без сертификата Apple Developer ID Gatekeeper один раз остановит первый
 > запуск: «Системные настройки → Конфиденциальность и безопасность → Всё равно
