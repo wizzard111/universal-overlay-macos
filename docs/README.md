@@ -9,7 +9,7 @@
 
 Версии для других систем: [Windows](https://github.com/wizzard111/universal-overlay-windows) · [Linux](https://github.com/wizzard111/universal-overlay-linux).
 
-Лицензия — [MIT](LICENSE). Что нового — [CHANGELOG](CHANGELOG.md).
+Лицензия — [MIT](../LICENSE). Что нового — [CHANGELOG](CHANGELOG.md).
 
 ## Установка, обновление, удаление
 
