@@ -1,0 +1,9 @@
+[package]
+name = "universal-overlay-settings"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+eframe = { version = "0.37.0", default-features = false, features = ["glow", "default_fonts"] }
+uo-common = { path = "../common" }

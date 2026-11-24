@@ -1,0 +1,18 @@
+[workspace]
+resolver = "2"
+members = ["crates/common", "crates/overlay", "crates/settings", "crates/updater"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/wizzard111/universal-overlay-macos"
+homepage = "https://github.com/wizzard111/universal-overlay-macos"
+description = "Лёгкий оверлей FPS, времени кадра и датчиков для macOS"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

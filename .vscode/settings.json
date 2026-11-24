@@ -1,0 +1,7 @@
+{
+    "rust-analyzer.linkedProjects": ["source/Cargo.toml"],
+    "rust-analyzer.cargo.target": "aarch64-apple-darwin",
+    "rust-analyzer.check.command": "clippy",
+    "[rust]": { "editor.formatOnSave": true },
+    "files.exclude": { "source/target": true }
+}
